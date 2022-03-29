@@ -1,5 +1,8 @@
 name: 'Generate content map'
 description: 'Generate a map of all content found in the site directory'
+branding:
+  icon: align-justify
+  color: black
 inputs:
   file_types:
     description: 'file types to include in the index.'
