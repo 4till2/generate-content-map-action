@@ -2,36 +2,36 @@ name: 'Generate content map'
 description: 'Generate a map of all content found in the site directory'
 inputs:
   file_types:
-    description: 'file types to include in the index'
-    required: false
-    default: 'html md'
+    description: 'file types to include in the index.'
+    required: true
+    default: 'md'
   meta_key:
-    description: 'only include pages with a given key in the metadata'
+    description: 'only include pages with a given key in the metadata (currently only one supported)'
     required: false
     default: ''
   meta_value:
-    description: 'only include pages with a given value matching the provided key in the metadata (requires key to be set)'
+    description: 'only include pages with a given value matching the provided key in the metadata (requires meta_key to be set, and only one supported)'
     required: false
     default: ''
   exclude_paths:
-    description: 'paths to exclude from being indexed (ie: node_modules tmp)'
+    description: 'paths to exclude from being indexed (ie: node_modules)'
     required: false
     default: ''
   output_file:
-    description: 'name and location for the json file for output. defaults to "./site_content_map". Set to empty to skip saving file'
-    required: false
+    description: 'name and location for the json file for output. defaults to "./site_content_map". Set to empty to skip saving file (maybe you only want to pass it to another action)'
+    required: true
     default: 'site_content_map'
   website_root:
     description: 'root path to the website used when setting a path to the original file'
     required: false
     default: ''
   output_content_type:
-    description: 'type of content to return in output if desired. Options are markdown or html. defaults to none. Leave blank to skip'
-    required: false
-    default: ''
+    description: 'type of content to return in output if desired. Options are markdown or html. defaults to markdown.'
+    required: true
+    default: 'markdown'
 outputs:
   contents: # output will be available to future steps
-    description: 'A json object containing the details and html for each markdown file parsed.'
+    description: 'A json object containing the each indexed page with the content and metadata.'
 runs:
   using: 'node16'
   main: 'dist/index.js'

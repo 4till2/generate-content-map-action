@@ -34,7 +34,7 @@ towels: ['a', 'b']
 test('test runs', () => {
     process.env['INPUT_FILE_TYPES'] = 'md';
     process.env['INPUT_META_KEY'] = 'publish';
-    // process.env['INPUT_META_VALUE'] = 'true';
+    process.env['INPUT_META_VALUE'] = 'true';
     process.env['INPUT_EXCLUDE_PATH'] = 'node_modules';
     process.env['INPUT_OUTPUT_CONTENT_TYPE'] = 'markdown';
     process.env['INPUT_OUTPUT_FILE'] = TEMP_FILE;

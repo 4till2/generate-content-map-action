@@ -1,7 +1,7 @@
 {
   "name": "generate-content-map-action",
   "version": "1.0.0",
-  "description": "JavaScript action for generating a site content map",
+  "description": "JavaScript action for generating a json file of repository content.",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint .",

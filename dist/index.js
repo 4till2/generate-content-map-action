@@ -17063,7 +17063,6 @@ const YAML = __nccwpck_require__(3552)
 const BASE_SHOWDOWN_OPTIONS = {}
 const SHOWDOWN_OPTIONS = {completeHTMLDocument: false, emoji: true, tasklists: true, moreStyling: true}
 
-//TODO: Yaml parsing of metadata with regex extraction https://www.npmjs.com/package/yaml
 const convertMarkdownToHtml = (markdown, options = {}) => {
     const converter = new showdown.Converter({...BASE_SHOWDOWN_OPTIONS, ...options});
     let html = converter.makeHtml(markdown).replace(/[\n\r]/g, '');
@@ -17071,7 +17070,6 @@ const convertMarkdownToHtml = (markdown, options = {}) => {
 }
 
 const parseMetadata = (content) => {
-    console.log(content)
     let md = content.match(/^(?<metadata>---\s*\n(.*?\n)+)^(---\s*$\n?)/m)
     if (!md || !md.groups.metadata) return ""
     let metadata = md.groups.metadata
@@ -17270,12 +17268,12 @@ const {formatContent} = __nccwpck_require__(9503);
 
 async function run() {
     try {
-        const include_file_types = core.getInput('file_types') || 'html md'
+        const include_file_types = core.getInput('file_types') || 'md'
         const include_meta_key = core.getInput('meta_key')
         const include_meta_value = core.getInput('meta_value')
         const exclude_path = core.getInput('exclude_path')
         const output_file = core.getInput('output_file') || 'site_content_map'
-        const output_content_type = core.getInput('output_content_type')
+        const output_content_type = core.getInput('output_content_type') || 'markdown'
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();
@@ -17302,15 +17300,14 @@ async function run() {
                     metadata: metadata
                 }
             })
-        ).then(res => res.filter(f => f)) //Remove empty slots as removed by validate_page
+        ).then(res => res.filter(f => f)) // remove empty slots as a result of validate_page
 
         if (output_file) {
             const targetDir = dirname(output_file);
             await mkdirP(targetDir);
-            await write_file(`${output_file}.json`, contents ? JSON.stringify(contents) : [])
-            core.setOutput('Contents written: ', contents);
+            await write_file(`${output_file}.json`, JSON.stringify(contents))
         }
-
+        core.setOutput('contents', contents);
     } catch (error) {
         core.setFailed(error.message);
     }
@@ -17342,7 +17339,7 @@ const execResults = async (...command) => {
 
 const validate_page = (meta, key, value) => {
     if (key) {
-        if (!meta) return false
+        if (!meta || !meta[key]) return false
         return (value ? meta[key].toString() === value.toString() : meta[key] !== undefined)
     }
     return true
