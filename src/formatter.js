@@ -1,5 +1,6 @@
 const showdown = require('showdown')
 const YAML = require('yaml')
+const core = require("@actions/core");
 const BASE_SHOWDOWN_OPTIONS = {}
 const SHOWDOWN_OPTIONS = {completeHTMLDocument: false, emoji: true, tasklists: true, moreStyling: true}
 
@@ -9,11 +10,21 @@ const convertMarkdownToHtml = (markdown, options = {}) => {
     return html
 }
 
+const yamlToJs = (yml) => {
+    try {
+        return YAML.parse(yml);
+    } catch (e) {
+        core.info(`Error parsing Yaml: ${yml}`)
+        return {};
+    }
+}
+
 const parseMetadata = (content) => {
     let md = content.match(/^(?<metadata>---\s*\n(.*?\n)+)^(---\s*$\n?)/m)
     if (!md || !md.groups.metadata) return ""
     let metadata = md.groups.metadata
-    return YAML.parse(metadata)
+
+    return yamlToJs(metadata)
 }
 
 const formatContent = (content, type) => {

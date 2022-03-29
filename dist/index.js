@@ -17060,6 +17060,7 @@ module.exports = {get_content, write_file};
 
 const showdown = __nccwpck_require__(1872)
 const YAML = __nccwpck_require__(3552)
+const core = __nccwpck_require__(2186);
 const BASE_SHOWDOWN_OPTIONS = {}
 const SHOWDOWN_OPTIONS = {completeHTMLDocument: false, emoji: true, tasklists: true, moreStyling: true}
 
@@ -17069,11 +17070,21 @@ const convertMarkdownToHtml = (markdown, options = {}) => {
     return html
 }
 
+const yamlToJs = (yml) => {
+    try {
+        return YAML.parse(yml);
+    } catch (e) {
+        core.info(`Error parsing Yaml: ${yml}`)
+        return {};
+    }
+}
+
 const parseMetadata = (content) => {
     let md = content.match(/^(?<metadata>---\s*\n(.*?\n)+)^(---\s*$\n?)/m)
     if (!md || !md.groups.metadata) return ""
     let metadata = md.groups.metadata
-    return YAML.parse(metadata)
+
+    return yamlToJs(metadata)
 }
 
 const formatContent = (content, type) => {
@@ -17271,14 +17282,14 @@ async function run() {
         const include_file_types = core.getInput('file_types') || 'md'
         const include_meta_key = core.getInput('meta_key')
         const include_meta_value = core.getInput('meta_value')
-        const exclude_path = core.getInput('exclude_path')
+        const exclude_paths = core.getInput('exclude_paths')
         const output_file = core.getInput('output_file') || 'site_content_map'
         const output_content_type = core.getInput('output_content_type') || 'markdown'
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();
         const include = include_file_types.split(' ').map(ext => `**/*.${ext}`)
-        const exclude = exclude_path ? exclude_path.split(' ').map(ext => `!**/*${ext}`) : ''
+        const exclude = exclude_paths ? exclude_paths.split(' ').map(ext => `!**/*${ext}`) : ''
         const patterns = include.concat(exclude)
         const globber = await glob.create(patterns.join('\n'))
         const files = await globber.glob()

@@ -12,14 +12,14 @@ async function run() {
         const include_file_types = core.getInput('file_types') || 'md'
         const include_meta_key = core.getInput('meta_key')
         const include_meta_value = core.getInput('meta_value')
-        const exclude_path = core.getInput('exclude_path')
+        const exclude_paths = core.getInput('exclude_paths')
         const output_file = core.getInput('output_file') || 'site_content_map'
         const output_content_type = core.getInput('output_content_type') || 'markdown'
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();
         const include = include_file_types.split(' ').map(ext => `**/*.${ext}`)
-        const exclude = exclude_path ? exclude_path.split(' ').map(ext => `!**/*${ext}`) : ''
+        const exclude = exclude_paths ? exclude_paths.split(' ').map(ext => `!**/*${ext}`) : ''
         const patterns = include.concat(exclude)
         const globber = await glob.create(patterns.join('\n'))
         const files = await globber.glob()
