@@ -17080,9 +17080,9 @@ const yamlToJs = (yml) => {
 }
 
 const parseMetadata = (content) => {
-    let md = content.match(/^(?<metadata>---\s*\n(.*?\n)+)^(---\s*$\n?)/m)
+    let md = content.match(/^(?<metadata>(---)[\S\s]+?(---))/m) // The first instance of yaml --- ---
     if (!md || !md.groups.metadata) return ""
-    let metadata = md.groups.metadata
+    let metadata = md.groups.metadata.replace(/---/g, '')
 
     return yamlToJs(metadata)
 }
