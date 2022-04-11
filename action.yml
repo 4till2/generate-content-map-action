@@ -32,6 +32,10 @@ inputs:
     description: 'type of content to return in output if desired. Options are markdown or html. defaults to markdown.'
     required: true
     default: 'markdown'
+  output_content_max_length:
+    description: 'If set will trim the output content to a maximum length. Useful for generating excerpts rather.'
+    required: false
+    default: 'All content'
 outputs:
   contents: # output will be available to future steps
     description: 'A json object containing the each indexed page with the content and metadata.'

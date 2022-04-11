@@ -15,6 +15,7 @@ async function run() {
         const exclude_paths = core.getInput('exclude_paths')
         const output_file = core.getInput('output_file') || 'site_content_map'
         const output_content_type = core.getInput('output_content_type') || 'markdown'
+        const output_content_max_length = core.getInput('output_content_max_length') || undefined
         const site_path = core.getInput('website_root')
 
         const current_path = process.cwd();
@@ -31,7 +32,10 @@ async function run() {
 
         let contents = await Promise.all(
             files.map(async (file) => {
-                let {content, metadata} = formatContent(await get_content(file), output_content_type)
+                let {
+                    content,
+                    metadata
+                } = formatContent(await get_content(file), output_content_type, output_content_max_length)
                 if (!validate_page(metadata, include_meta_key, include_meta_value)) return
                 return {
                     src: file.replace(current_path, site_path),

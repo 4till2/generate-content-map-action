@@ -30,6 +30,17 @@ towels: ['a', 'b']
     })
 })
 
+test('trim content output', () => {
+    let body = "\nthe main text."
+    let md = `
+---
+name: marvin 
+---${body}`
+
+    expect(formatContent(md, 'markdown', 3).content.length).toEqual(3)
+    expect(formatContent(md, 'markdown',).content.length).toEqual(body.length)
+})
+
 // shows how the runner will run a javascript action with env / stdout protocol
 test('test runs', () => {
     process.env['INPUT_FILE_TYPES'] = 'md';

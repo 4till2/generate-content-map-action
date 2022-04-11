@@ -19,27 +19,30 @@ const yamlToJs = (yml) => {
     }
 }
 
-const parseMetadata = (content) => {
-    let md = content.match(/^(?<metadata>(---)[\S\s]+?(---))/m) // The first instance of yaml --- ---
-    if (!md || !md.groups.metadata) return ""
+const parsePage = (content, trimVal) => {
+    let md = content.match(/^(?<metadata>(---)[\S\s]+?(---))(?<body>[\S\s]*)/m) // The first instance of yaml --- ---
     let metadata = md.groups.metadata.replace(/---/g, '')
-
-    return yamlToJs(metadata)
+    let body = md.groups.body
+    return {
+        metadata: yamlToJs(metadata),
+        body: body.slice(0, trimVal) // if trimVal is undefined the entire body is returned.
+    }
 }
 
-const formatContent = (content, type) => {
+const formatContent = (content, type, trimVal) => {
+    let {body, metadata} = parsePage(content, trimVal)
     return {
         content: (() => {
             switch (type) {
                 case 'html':
-                    return convertMarkdownToHtml(content, SHOWDOWN_OPTIONS);
+                    return convertMarkdownToHtml(body, SHOWDOWN_OPTIONS);
                 case 'markdown':
-                    return content;
+                    return body
                 default:
                     return;
             }
         })(),
-        metadata: parseMetadata(content)
+        metadata: metadata
     }
 }
 module.exports = {formatContent}
