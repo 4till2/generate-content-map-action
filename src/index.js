@@ -38,7 +38,8 @@ async function run() {
                 } = formatContent(await get_content(file), output_content_type, output_content_max_length)
                 if (!validate_page(metadata, include_meta_key, include_meta_value)) return
                 return {
-                    src: file.replace(current_path, site_path),
+                    url: file.replace(current_path, site_path),
+                    path: file.replace(current_path, ''),
                     last_modified: await lastModified(file),
                     content: content,
                     content_type: output_content_type,
